@@ -1,0 +1,118 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: #111;
+    font-family: 'Comic Sans MS', 'Chalkboard SE', 'Marker Felt', sans-serif;
+}
+
+#app-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+#game-canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* --- Title Screen --- */
+#title-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, #a8d0e6, #f8e9a1);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    z-index: 100;
+}
+
+#title-screen .logo {
+    width: 80%;
+    max-width: 400px;
+    height: auto;
+    border-radius: 20px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    margin-bottom: 20px;
+}
+
+#title-screen h1 {
+    font-size: clamp(2rem, 10vw, 3.5rem);
+    color: #37474f;
+    text-shadow: 2px 2px 4px rgba(255,255,255,0.7);
+}
+
+#start-button {
+    padding: 15px 30px;
+    font-size: clamp(1rem, 5vw, 1.5rem);
+    background-color: #89c9b8;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+    transition: transform 0.2s ease, background-color 0.2s ease;
+    font-family: inherit;
+}
+
+#start-button:hover {
+    transform: scale(1.05);
+    background-color: #7ab8a8;
+}
+
+/* --- In-Game UI --- */
+#game-ui {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* Allow clicks to pass through to the canvas */
+    z-index: 10;
+}
+
+#inventory {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+.inventory-slot {
+    width: 50px;
+    height: 50px;
+    background-color: rgba(255, 255, 255, 0.3);
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.inventory-slot img {
+    width: 70%;
+    height: 70%;
+    opacity: 0.5;
+}
+
+#joystick-container {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    width: 150px;
+    height: 150px;
+}
