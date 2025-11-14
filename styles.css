@@ -115,4 +115,5 @@ body, html {
     right: 20px;
     width: 150px;
     height: 150px;
+    pointer-events: auto; /* This allows the joystick to be interactive */
 }

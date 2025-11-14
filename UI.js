@@ -5,6 +5,7 @@ export class UI {
         this.startButton = document.getElementById('start-button');
         this.gameUI = document.getElementById('game-ui');
         this.inventoryContainer = document.getElementById('inventory');
+        this.joystickContainer = document.getElementById('joystick-container');
 
         this.inventorySlots = 5;
         this.createInventoryUI();
@@ -30,6 +31,12 @@ export class UI {
             img.src = 'paw_icon.png';
             slot.appendChild(img);
             this.inventoryContainer.appendChild(slot);
+        }
+    }
+
+    setMobile(isMobile) {
+        if (!isMobile) {
+            this.joystickContainer.style.display = 'none';
         }
     }
 }

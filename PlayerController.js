@@ -60,6 +60,22 @@ export class PlayerController {
             case 'KeyD': case 'ArrowRight': this.keys.right = isPressed; break;
         }
     }
+
+    getMovementInputFromJoystick(data) {
+        const { vector } = data;
+        if (!vector) {
+            return { x: 0, z: 0 };
+        }
+        
+        const moveDirection = new THREE.Vector3(0, 0, 0);
+
+        if (vector.y > 0.1) moveDirection.z -= Math.abs(vector.y);
+        if (vector.y < -0.1) moveDirection.z += Math.abs(vector.y);
+        if (vector.x < -0.1) moveDirection.x -= Math.abs(vector.x);
+        if (vector.x > 0.1) moveDirection.x += Math.abs(vector.x);
+
+        return moveDirection;
+    }
     
     setupMobileControls() {
         const options = {
@@ -70,28 +86,27 @@ export class PlayerController {
             size: 150
         };
         const manager = nipplejs.create(options);
+        
         manager.on('move', (evt, data) => {
-            if (data.vector) {
-                this.keys.forward = data.vector.y > 0.1;
-                this.keys.backward = data.vector.y < -0.1;
-                this.keys.left = data.vector.x < -0.1;
-                this.keys.right = data.vector.x > 0.1;
-            }
+            this.joystickInput = this.getMovementInputFromJoystick(data);
         });
+
         manager.on('end', () => {
-            this.keys.forward = false;
-            this.keys.backward = false;
-            this.keys.left = false;
-            this.keys.right = false;
+            this.joystickInput = null;
         });
     }
 
     update(deltaTime) {
-        const moveDirection = new THREE.Vector3(0, 0, 0);
-        if (this.keys.forward) moveDirection.z -= 1;
-        if (this.keys.backward) moveDirection.z += 1;
-        if (this.keys.left) moveDirection.x -= 1;
-        if (this.keys.right) moveDirection.x += 1;
+        let moveDirection = new THREE.Vector3(0, 0, 0);
+
+        if (this.isMobile && this.joystickInput) {
+            moveDirection.copy(this.joystickInput);
+        } else if (!this.isMobile) {
+            if (this.keys.forward) moveDirection.z -= 1;
+            if (this.keys.backward) moveDirection.z += 1;
+            if (this.keys.left) moveDirection.x -= 1;
+            if (this.keys.right) moveDirection.x += 1;
+        }
         
         moveDirection.normalize();
 

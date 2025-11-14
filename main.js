@@ -24,6 +24,7 @@ class Game {
         this.ui = new UI(this);
         this.world = new World(this.scene, this.audioManager);
         this.playerController = new PlayerController(this.scene, this.camera, this.renderer.domElement, this);
+        this.ui.setMobile(this.playerController.isMobile);
 
         this.animate();
     }
