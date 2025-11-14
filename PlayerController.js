@@ -98,9 +98,11 @@ export class PlayerController {
 
     update(deltaTime) {
         let moveDirection = new THREE.Vector3(0, 0, 0);
+        let moveMagnitude = 1.0;
 
         if (this.isMobile && this.joystickInput) {
             moveDirection.copy(this.joystickInput);
+            moveMagnitude = moveDirection.length();
         } else if (!this.isMobile) {
             if (this.keys.forward) moveDirection.z -= 1;
             if (this.keys.backward) moveDirection.z += 1;
@@ -108,16 +110,15 @@ export class PlayerController {
             if (this.keys.right) moveDirection.x += 1;
         }
         
-        moveDirection.normalize();
+        if (moveDirection.length() > 0.001) {
+            moveDirection.normalize();
 
-        if (moveDirection.length() > 0.1) {
-            const targetQuaternion = new THREE.Quaternion();
             const targetAngle = Math.atan2(moveDirection.x, moveDirection.z);
-            targetQuaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), targetAngle);
+            const targetQuaternion = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), targetAngle);
             this.player.quaternion.slerp(targetQuaternion, this.rotationSpeed * deltaTime);
 
             const forward = new THREE.Vector3(0, 0, -1).applyQuaternion(this.player.quaternion);
-            this.velocity.add(forward.multiplyScalar(this.speed * deltaTime));
+            this.velocity.add(forward.multiplyScalar(this.speed * moveMagnitude * deltaTime));
         }
 
         // Apply friction
