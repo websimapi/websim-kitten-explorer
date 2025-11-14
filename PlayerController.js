@@ -11,8 +11,8 @@ export class PlayerController {
 
         this.velocity = new THREE.Vector3();
         this.direction = new THREE.Vector3();
-        this.speed = 5.0;
-        this.rotationSpeed = 4.0;
+        this.speed = 2.0; // reduced for mobile & desktop
+        this.rotationSpeed = 6.0; // slightly snappier rotation for control
         
         this.keys = {
             forward: false,
@@ -83,7 +83,7 @@ export class PlayerController {
             mode: 'static',
             position: { left: '50%', top: '50%' },
             color: 'rgba(255, 255, 255, 0.5)',
-            size: 150
+            size: 140
         };
         const manager = nipplejs.create(options);
         
@@ -102,7 +102,7 @@ export class PlayerController {
 
         if (this.isMobile && this.joystickInput) {
             moveDirection.copy(this.joystickInput);
-            moveMagnitude = moveDirection.length();
+            moveMagnitude = THREE.MathUtils.clamp(moveDirection.length(), 0, 1);
         } else if (!this.isMobile) {
             if (this.keys.forward) moveDirection.z -= 1;
             if (this.keys.backward) moveDirection.z += 1;
@@ -110,21 +110,18 @@ export class PlayerController {
             if (this.keys.right) moveDirection.x += 1;
         }
         
-        if (moveDirection.length() > 0.001) {
+        if (moveDirection.lengthSq() > 0.0001) {
             moveDirection.normalize();
 
             const targetAngle = Math.atan2(moveDirection.x, moveDirection.z);
             const targetQuaternion = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), targetAngle);
             this.player.quaternion.slerp(targetQuaternion, this.rotationSpeed * deltaTime);
 
+            // Direct displacement (no acceleration): consistent, slower control
             const forward = new THREE.Vector3(0, 0, -1).applyQuaternion(this.player.quaternion);
-            this.velocity.add(forward.multiplyScalar(this.speed * moveMagnitude * deltaTime));
+            const displacement = forward.multiplyScalar(this.speed * moveMagnitude * deltaTime);
+            this.player.position.add(displacement);
         }
-
-        // Apply friction
-        this.velocity.multiplyScalar(1 - 10 * deltaTime);
-        
-        this.player.position.add(this.velocity);
 
         // Simple ground collision
         if (this.player.position.y < 0.5) {

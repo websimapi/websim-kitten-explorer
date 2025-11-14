@@ -33,6 +33,7 @@ class Game {
         this.world.init();
         this.playerController.init();
         this.audioManager.startAmbientSounds();
+        this.audioManager.loadSound('collect', 'collect_item.mp3', false, 0.6);
     }
 
     setupEventListeners() {
@@ -51,6 +52,14 @@ class Game {
 
         if (this.playerController && this.playerController.isInitialized) {
             this.playerController.update(deltaTime);
+            // Check collectible interactions
+            const collected = this.world.checkCollectibles(this.playerController.player.position);
+            if (collected > 0) {
+                for (let i = 0; i < collected; i++) {
+                    this.ui.addCollectedItem();
+                    this.audioManager.playSound('collect');
+                }
+            }
         }
         if (this.world) {
             this.world.update(deltaTime);

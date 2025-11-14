@@ -19,7 +19,9 @@ export class AudioManager {
     }
 
     playSound(name) {
-        if (this.sounds[name] && !this.sounds[name].isPlaying) {
+        if (this.sounds[name]) {
+            // restart if already playing for rapid pickups
+            if (this.sounds[name].isPlaying) this.sounds[name].stop();
             this.sounds[name].play();
         }
     }
@@ -28,7 +30,6 @@ export class AudioManager {
         this.loadSound('water', 'water_trickle.mp3', true, 0.3);
         this.loadSound('leaves', 'leaf_rustle.mp3', true, 0.4);
 
-        // A small delay to ensure sounds are loaded
         setTimeout(() => {
             if (this.sounds.water) this.sounds.water.play();
             if (this.sounds.leaves) this.sounds.leaves.play();

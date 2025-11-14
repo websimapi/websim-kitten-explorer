@@ -99,6 +99,19 @@ export class World {
         }
     }
 
+    checkCollectibles(playerPosition, radius = 0.6) {
+        let collectedCount = 0;
+        for (let i = this.collectibles.length - 1; i >= 0; i--) {
+            const item = this.collectibles[i];
+            if (item.position.distanceTo(playerPosition) <= radius) {
+                this.scene.remove(item);
+                this.collectibles.splice(i, 1);
+                collectedCount++;
+            }
+        }
+        return collectedCount;
+    }
+
     update(deltaTime) {
         if (this.waterMaterial) {
              this.waterMaterial.map.offset.x += deltaTime * 0.01;
